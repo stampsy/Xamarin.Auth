@@ -78,6 +78,18 @@ namespace Xamarin.Auth
 			var req = GetPreparedWebRequest ();
 
 			//
+			// Authorize it
+			//
+			var authorization = GetAuthorizationHeader ();
+
+			req.Headers [HttpRequestHeader.Authorization] = authorization;
+
+			return base.GetResponseAsync (cancellationToken);
+		}
+
+		protected virtual string GetAuthorizationHeader ()
+		{
+			//
 			// Make sure that the parameters array contains
 			// mulitpart keys if we're dealing with a buggy
 			// OAuth implementation (I'm looking at you Flickr).
@@ -93,10 +105,7 @@ namespace Xamarin.Auth
 				}
 			}
 
-			//
-			// Authorize it
-			//
-			var authorization = OAuth1.GetAuthorizationHeader (
+			return OAuth1.GetAuthorizationHeader (
 				Method,
 				Url,
 				ps,
@@ -104,10 +113,6 @@ namespace Xamarin.Auth
 				Account.Properties ["oauth_consumer_secret"],
 				Account.Properties ["oauth_token"],
 				Account.Properties ["oauth_token_secret"]);
-			
-			req.Headers [HttpRequestHeader.Authorization] = authorization;
-			
-			return base.GetResponseAsync (cancellationToken);
 		}
 	}
 }
