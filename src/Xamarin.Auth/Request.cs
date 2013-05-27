@@ -222,20 +222,39 @@ namespace Xamarin.Auth
 				request.ContentLength = bodyData.Length;
 				request.ContentType = "application/x-www-form-urlencoded";
 
-				return Task.Factory
-						.FromAsync<Stream> (request.BeginGetRequestStream, request.EndGetRequestStream, null)
-						.ContinueWith (reqStreamTask => {
+                var tcs = new TaskCompletionSource<Response> ();
 
-					using (reqStreamTask.Result) {
-						reqStreamTask.Result.Write (bodyData, 0, bodyData.Length);
-					}
-							
-					return Task.Factory
-								.FromAsync<WebResponse> (request.BeginGetResponse, request.EndGetResponse, null)
-									.ContinueWith (resTask => {
-						return new Response ((HttpWebResponse)resTask.Result);
-					}, cancellationToken).Result;
-				}, cancellationToken);
+                Task.Factory
+                    .FromAsync<Stream> (request.BeginGetRequestStream, request.EndGetRequestStream, null)
+                        .ContinueWith (reqStreamTask => {
+                            if (reqStreamTask.IsCanceled) {
+                                tcs.SetCanceled ();
+                                return;
+                            } else if (reqStreamTask.IsFaulted) {
+                                tcs.SetException (reqStreamTask.Exception);
+                                return;
+                            }
+
+                            using (reqStreamTask.Result) {
+                                reqStreamTask.Result.Write (bodyData, 0, bodyData.Length);
+                            }
+
+                            Task.Factory
+                                .FromAsync<WebResponse> (request.BeginGetResponse, request.EndGetResponse, null)
+                                    .ContinueWith (responseTask => {
+                                        if (responseTask.IsCanceled) {
+                                            tcs.SetCanceled ();
+                                            return;
+                                        } else if (responseTask.IsFaulted) {
+                                            tcs.SetException (responseTask.Exception);
+                                            return;
+                                        }
+
+                                        tcs.SetResult (new Response ((HttpWebResponse) responseTask.Result));
+                                    }, cancellationToken);
+                        }, cancellationToken);
+
+                return tcs.Task;
 			} else {
 				return Task.Factory
 						.FromAsync<WebResponse> (request.BeginGetResponse, request.EndGetResponse, null)
