@@ -167,7 +167,13 @@ namespace Xamarin.Auth
 
 				r.TryGetValue ("oauth_verifier", out verifier);
 
-				GetAccessTokenAsync ();
+				GetAccessTokenAsync ().ContinueWith (tokenTask => {
+					if (tokenTask.IsCanceled) {
+						OnCancelled ();
+					} else if (tokenTask.IsFaulted) {
+						OnError (tokenTask.Exception);
+					}
+				}, TaskContinuationOptions.NotOnRanToCompletion);
 			}
 		}
 
@@ -189,11 +195,6 @@ namespace Xamarin.Auth
 				tokenSecret);
 			
 			return req.GetResponseAsync ().ContinueWith (respTask => {
-				if (respTask.IsFaulted) {
-					OnError (respTask.Exception);
-					return;
-				}
-
 				var content = respTask.Result.GetResponseText ();
 
 				var accountProperties = WebEx.FormDecode (content);
