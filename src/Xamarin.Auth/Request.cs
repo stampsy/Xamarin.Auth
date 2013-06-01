@@ -60,11 +60,11 @@ namespace Xamarin.Auth
 		/// </summary>
 		public virtual Account Account { get; set; }
 
-        /// <summary>
-        /// Gets or sets the body.
-        /// </summary>
-        /// <value>The body.</value>
-        public string Body { get; set; }
+		/// <summary>
+		/// Gets or sets the body.
+		/// </summary>
+		/// <value>The body.</value>
+		public string Body { get; set; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Xamarin.Auth.Request"/> class.
@@ -223,44 +223,44 @@ namespace Xamarin.Auth
 					}, cancellationToken).Result;
 				}, cancellationToken);
 			} else if (Method == "POST" && (Parameters.Count > 0 || !String.IsNullOrWhiteSpace (Body))) {
-                var body = GetRawBody ();
-                var bodyData = System.Text.Encoding.UTF8.GetBytes (body);
-                request.ContentLength = bodyData.Length;
-                request.ContentType = "application/x-www-form-urlencoded";
+				var body = GetRawBody ();
+				var bodyData = System.Text.Encoding.UTF8.GetBytes (body);
+				request.ContentLength = bodyData.Length;
+				request.ContentType = "application/x-www-form-urlencoded";
 
-                var tcs = new TaskCompletionSource<Response> ();
+				var tcs = new TaskCompletionSource<Response> ();
 
-                Task.Factory
-                    .FromAsync<Stream> (request.BeginGetRequestStream, request.EndGetRequestStream, null)
-                        .ContinueWith (reqStreamTask => {
-                            if (reqStreamTask.IsCanceled) {
-                                tcs.SetCanceled ();
-                                return;
-                            } else if (reqStreamTask.IsFaulted) {
-                                tcs.SetException (reqStreamTask.Exception);
-                                return;
-                            }
+				Task.Factory
+					.FromAsync<Stream> (request.BeginGetRequestStream, request.EndGetRequestStream, null)
+						.ContinueWith (reqStreamTask => {
+							if (reqStreamTask.IsCanceled) {
+								tcs.SetCanceled ();
+								return;
+							} else if (reqStreamTask.IsFaulted) {
+								tcs.SetException (reqStreamTask.Exception);
+								return;
+							}
 
-                            using (reqStreamTask.Result) {
-                                reqStreamTask.Result.Write (bodyData, 0, bodyData.Length);
-                            }
+							using (reqStreamTask.Result) {
+								reqStreamTask.Result.Write (bodyData, 0, bodyData.Length);
+							}
 
-                            Task.Factory
-                                .FromAsync<WebResponse> (request.BeginGetResponse, request.EndGetResponse, null)
-                                    .ContinueWith (responseTask => {
-                                        if (responseTask.IsCanceled) {
-                                            tcs.SetCanceled ();
-                                            return;
-                                        } else if (responseTask.IsFaulted) {
-                                            tcs.SetException (responseTask.Exception);
-                                            return;
-                                        }
+							Task.Factory
+								.FromAsync<WebResponse> (request.BeginGetResponse, request.EndGetResponse, null)
+									.ContinueWith (responseTask => {
+										if (responseTask.IsCanceled) {
+											tcs.SetCanceled ();
+											return;
+										} else if (responseTask.IsFaulted) {
+											tcs.SetException (responseTask.Exception);
+											return;
+										}
 
-                                        tcs.SetResult (new Response ((HttpWebResponse) responseTask.Result));
-                                    }, cancellationToken);
-                        }, cancellationToken);
+										tcs.SetResult (new Response ((HttpWebResponse) responseTask.Result));
+									}, cancellationToken);
+						}, cancellationToken);
 
-                return tcs.Task;
+				return tcs.Task;
 			} else {
 				return Task.Factory
 						.FromAsync<WebResponse> (request.BeginGetResponse, request.EndGetResponse, null)
@@ -270,20 +270,20 @@ namespace Xamarin.Auth
 			}
 		}
 
-        public string GetRawBody ()
-        {
-            var bodyBuilder = new StringBuilder ();
+		public string GetRawBody ()
+		{
+			var bodyBuilder = new StringBuilder ();
 
-            if (Parameters.Count > 0) {
-                bodyBuilder.Append (Parameters.FormEncode ());
-            }
+			if (Parameters.Count > 0) {
+				bodyBuilder.Append (Parameters.FormEncode ());
+			}
 
-            if (!String.IsNullOrWhiteSpace (Body)) {
-                bodyBuilder.Append (Body);
-            }
+			if (!String.IsNullOrWhiteSpace (Body)) {
+				bodyBuilder.Append (Body);
+			}
 
-            return bodyBuilder.ToString ();
-        }
+			return bodyBuilder.ToString ();
+		}
 
 		void WriteMultipartFormData (string boundary, Stream s)
 		{
