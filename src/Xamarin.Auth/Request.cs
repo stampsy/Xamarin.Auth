@@ -60,6 +60,12 @@ namespace Xamarin.Auth
 		/// </summary>
 		public virtual Account Account { get; set; }
 
+        /// <summary>
+        /// Gets or sets the body.
+        /// </summary>
+        /// <value>The body.</value>
+        public string Body { get; set; }
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Xamarin.Auth.Request"/> class.
 		/// </summary>
@@ -216,11 +222,11 @@ namespace Xamarin.Auth
 						return new Response ((HttpWebResponse)resTask.Result);
 					}, cancellationToken).Result;
 				}, cancellationToken);
-			} else if (Method == "POST" && Parameters.Count > 0) {
-				var body = Parameters.FormEncode ();
-				var bodyData = System.Text.Encoding.UTF8.GetBytes (body);
-				request.ContentLength = bodyData.Length;
-				request.ContentType = "application/x-www-form-urlencoded";
+			} else if (Method == "POST" && (Parameters.Count > 0 || !String.IsNullOrWhiteSpace (Body))) {
+                var body = GetRawBody ();
+                var bodyData = System.Text.Encoding.UTF8.GetBytes (body);
+                request.ContentLength = bodyData.Length;
+                request.ContentType = "application/x-www-form-urlencoded";
 
                 var tcs = new TaskCompletionSource<Response> ();
 
@@ -263,6 +269,21 @@ namespace Xamarin.Auth
 				}, cancellationToken);
 			}
 		}
+
+        public string GetRawBody ()
+        {
+            var bodyBuilder = new StringBuilder ();
+
+            if (Parameters.Count > 0) {
+                bodyBuilder.Append (Parameters.FormEncode ());
+            }
+
+            if (!String.IsNullOrWhiteSpace (Body)) {
+                bodyBuilder.Append (Body);
+            }
+
+            return bodyBuilder.ToString ();
+        }
 
 		void WriteMultipartFormData (string boundary, Stream s)
 		{
