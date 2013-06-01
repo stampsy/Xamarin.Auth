@@ -187,7 +187,7 @@ namespace Xamarin.Utilities
 			return r;
 		}
 
-		public static Dictionary<string, string> GetValuesFromResponse (string response, ResponseFormat format)
+		public static IDictionary<string, string> GetValuesFromResponse (string response, ResponseFormat format)
 		{
 			if (format == ResponseFormat.Form)
 				return WebEx.FormDecode (response);
