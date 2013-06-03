@@ -170,8 +170,8 @@ namespace Xamarin.Auth
 						OnCancelled ();
 					else
 						OnPageLoaded (callbackTask.Result);
-				});
-			});
+				}, TaskScheduler.FromCurrentSynchronizationContext ());
+			}, TaskScheduler.FromCurrentSynchronizationContext ());
 		}
 	}
 }
