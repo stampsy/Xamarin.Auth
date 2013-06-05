@@ -67,12 +67,6 @@ namespace Xamarin.Auth
 		public virtual Account Account { get; set; }
 
 		/// <summary>
-		/// Gets or sets the body.
-		/// </summary>
-		/// <value>The body.</value>
-		public string Body { get; set; }
-
-		/// <summary>
 		/// Initializes a new instance of the <see cref="Xamarin.Auth.Request"/> class.
 		/// </summary>
 		/// <param name='method'>
@@ -300,21 +294,6 @@ namespace Xamarin.Auth
 			}
 
 			return tcs.Task;
-		}
-
-		public string GetRawBody ()
-		{
-			var bodyBuilder = new StringBuilder ();
-
-			if (Parameters.Count > 0) {
-				bodyBuilder.Append (Parameters.FormEncode ());
-			}
-
-			if (!String.IsNullOrWhiteSpace (Body)) {
-				bodyBuilder.Append (Body);
-			}
-
-			return bodyBuilder.ToString ();
 		}
 
 		void WriteMultipartFormData (string boundary, Stream s)

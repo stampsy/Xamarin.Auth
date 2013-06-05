@@ -85,8 +85,6 @@ namespace Xamarin.Auth
 		/// </param>
 		public abstract void OnPageLoaded (Uri url);
 
-		protected abstract string ExternalUrlScheme { get; }
-
 		/// <summary>
 		/// Clears all cookies.
 		/// </summary>
