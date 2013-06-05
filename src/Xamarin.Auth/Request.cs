@@ -50,10 +50,16 @@ namespace Xamarin.Auth
 
 		/// <summary>
 		/// The parameters of the request. These will be added to the query string of the
-		/// URL for GET requests, encoded as form a parameters for POSTs, and added as
-		/// multipart values if the request uses <see cref="Multiparts"/>.
+		/// URL for GET requests, encoded as form parameters and concatenated with <see cref="Body"/> for POSTs,
+		/// and added as multipart values if the request uses <see cref="Multiparts"/>.
 		/// </summary>
 		public IDictionary<string, string> Parameters { get; protected set; }
+
+		/// <summary>
+		/// The body of the request. Unless <see cref="HasBody"/> is overriden,
+		/// its value will be appended to the form-encoded <see cref="Parameters"/> for POSTs.
+		/// </summary>
+		public virtual string Body { get; set; }
 
 		/// <summary>
 		/// The account that will be used to authenticate this request.
@@ -196,6 +202,7 @@ namespace Xamarin.Auth
 		public virtual Task<Response> GetResponseAsync (CancellationToken cancellationToken)
 		{
 			var request = GetPreparedWebRequest ();
+			var tcs = new TaskCompletionSource<Response> ();
 
 			//
 			// Disable 100-Continue: http://blogs.msdn.com/b/shitals/archive/2008/12/27/9254245.aspx
@@ -204,70 +211,95 @@ namespace Xamarin.Auth
 				ServicePointManager.Expect100Continue = false;
 			}
 
+			cancellationToken.Register (() => tcs.TrySetCanceled ());
+
 			if (Multiparts.Count > 0) {
 				var boundary = "---------------------------" + new Random ().Next ();
 				request.ContentType = "multipart/form-data; boundary=" + boundary;
 
-				return Task.Factory
-						.FromAsync<Stream> (request.BeginGetRequestStream, request.EndGetRequestStream, null)
-						.ContinueWith (reqStreamtask => {
-						
-					using (reqStreamtask.Result) {
-						WriteMultipartFormData (boundary, reqStreamtask.Result);
+				Task.Factory
+					.FromAsync<Stream> (request.BeginGetRequestStream, request.EndGetRequestStream, null)
+					.ContinueWith (reqStreamtask => {
+
+					try {
+						using (reqStreamtask.Result) {
+							WriteMultipartFormData (boundary, reqStreamtask.Result);
+						}
+					} catch (Exception ex) {
+						tcs.TrySetException (ex);
+						return;
 					}
+
+					Task.Factory
+						.FromAsync<WebResponse> (request.BeginGetResponse, request.EndGetResponse, null)
+						.ContinueWith (resTask => {
 						
-					return Task.Factory
-									.FromAsync<WebResponse> (request.BeginGetResponse, request.EndGetResponse, null)
-									.ContinueWith (resTask => {
-						return new Response ((HttpWebResponse)resTask.Result);
-					}, cancellationToken).Result;
+						Response result = null;
+						try {
+							result = new Response ((HttpWebResponse) resTask.Result);
+						} catch (Exception ex) {
+							tcs.TrySetException (ex);
+							return;
+						}
+
+						tcs.TrySetResult (result);
+
+					}, cancellationToken);
 				}, cancellationToken);
-			} else if (Method == "POST" && (Parameters.Count > 0 || !String.IsNullOrWhiteSpace (Body))) {
+			} else if (Method == "POST" && HasBody) {
 				var body = GetRawBody ();
 				var bodyData = System.Text.Encoding.UTF8.GetBytes (body);
 				request.ContentLength = bodyData.Length;
 				request.ContentType = "application/x-www-form-urlencoded";
 
-				var tcs = new TaskCompletionSource<Response> ();
-
 				Task.Factory
 					.FromAsync<Stream> (request.BeginGetRequestStream, request.EndGetRequestStream, null)
-						.ContinueWith (reqStreamTask => {
-							if (reqStreamTask.IsCanceled) {
-								tcs.SetCanceled ();
-								return;
-							} else if (reqStreamTask.IsFaulted) {
-								tcs.SetException (reqStreamTask.Exception);
-								return;
-							}
+					.ContinueWith (reqStreamTask => {
+					
+					try {
+						using (reqStreamTask.Result) {
+							reqStreamTask.Result.Write (bodyData, 0, bodyData.Length);
+						}
+					} catch (Exception ex) {
+						tcs.TrySetException (ex);
+						return;
+					}
 
-							using (reqStreamTask.Result) {
-								reqStreamTask.Result.Write (bodyData, 0, bodyData.Length);
-							}
-
-							Task.Factory
-								.FromAsync<WebResponse> (request.BeginGetResponse, request.EndGetResponse, null)
-									.ContinueWith (responseTask => {
-										if (responseTask.IsCanceled) {
-											tcs.SetCanceled ();
-											return;
-										} else if (responseTask.IsFaulted) {
-											tcs.SetException (responseTask.Exception);
-											return;
-										}
-
-										tcs.SetResult (new Response ((HttpWebResponse) responseTask.Result));
-									}, cancellationToken);
-						}, cancellationToken);
-
-				return tcs.Task;
-			} else {
-				return Task.Factory
+					Task.Factory
 						.FromAsync<WebResponse> (request.BeginGetResponse, request.EndGetResponse, null)
 						.ContinueWith (resTask => {
-					return new Response ((HttpWebResponse)resTask.Result);
+
+						Response result = null;
+						try {
+							result = new Response ((HttpWebResponse) resTask.Result);
+						} catch (Exception ex) {
+							tcs.TrySetException (ex);
+							return;
+						}
+						
+						tcs.TrySetResult (result);
+						
+					}, cancellationToken);
+				}, cancellationToken);
+			} else {
+				Task.Factory
+					.FromAsync<WebResponse> (request.BeginGetResponse, request.EndGetResponse, null)
+					.ContinueWith (resTask => {
+
+					Response result = null;
+					try {
+						result = new Response ((HttpWebResponse) resTask.Result);
+					} catch (Exception ex) {
+						tcs.TrySetException (ex);
+						return;
+					}
+
+					tcs.TrySetResult (result);
+
 				}, cancellationToken);
 			}
+
+			return tcs.Task;
 		}
 
 		public string GetRawBody ()
@@ -388,6 +420,24 @@ namespace Xamarin.Auth
 			}
 
 			return request;
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="Xamarin.Auth.Request"/> needs to have a body on POST.
+		/// </summary>
+		protected virtual bool HasBody {
+			get {
+				return Parameters.Count > 0 || !string.IsNullOrWhiteSpace (Body);
+			}
+		}
+
+		/// <summary>
+		/// Returns the request body that will be used for POST if <see cref="HasBody"/> is <c>true</c>.
+		/// By default, it includes form-encoded <see cref="Parameters"/> concatenated with <see cref="Body"/>.
+		/// </summary>
+		public virtual string GetRawBody ()
+		{
+			return Parameters.FormEncode () + Body;
 		}
 	}
 }

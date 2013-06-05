@@ -87,6 +87,9 @@ namespace Xamarin.Auth
 			return base.GetResponseAsync (cancellationToken);
 		}
 
+		/// <summary>
+		/// Gets OAuth authorization header.
+		/// </summary>
 		protected virtual string GetAuthorizationHeader ()
 		{
 			//

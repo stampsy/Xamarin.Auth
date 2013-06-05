@@ -55,8 +55,8 @@ namespace Xamarin.Auth
 
 		string verifier;
 
-		protected override string ExternalUrlScheme {
-			get { return callbackUrl.Scheme; }
+		protected override Uri CustomUrl {
+			get { return callbackUrl; }
 		}
 
 		/// <summary>
@@ -167,11 +167,11 @@ namespace Xamarin.Auth
 
 				r.TryGetValue ("oauth_verifier", out verifier);
 
-				GetAccessTokenAsync ().ContinueWith (tokenTask => {
-					if (tokenTask.IsCanceled) {
+				GetAccessTokenAsync ().ContinueWith (getTokenTask => {
+					if (getTokenTask.IsCanceled) {
 						OnCancelled ();
-					} else if (tokenTask.IsFaulted) {
-						OnError (tokenTask.Exception);
+					} else if (getTokenTask.IsFaulted) {
+						OnError (getTokenTask.Exception);
 					}
 				}, TaskContinuationOptions.NotOnRanToCompletion);
 			}

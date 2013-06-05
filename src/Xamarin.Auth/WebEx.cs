@@ -113,7 +113,7 @@ namespace Xamarin.Utilities
 		static char[] AmpersandChars = new char[] { '&' };
 		static char[] EqualsChars = new char[] { '=' };
 
-		public static Dictionary<string, string> FormDecode (string encodedString)
+		public static IDictionary<string, string> FormDecode (string encodedString)
 		{
 			var inputs = new Dictionary<string, string> ();
 
@@ -171,52 +171,26 @@ namespace Xamarin.Utilities
 			return sb.ToString();
 		}
 
-		public static string GetValueFromJson (string json, string key)
+		public static Dictionary<string, string> JsonDecode (string encoded)
 		{
-			var p = json.IndexOf ("\"" + key + "\"");
-			if (p < 0) return "";
-			var c = json.IndexOf (":", p);
-			if (c < 0) return "";
-			var q = json.IndexOf ("\"", c);
-			if (q < 0) return "";
-			var b = q + 1;
-			var e = b;
-			for (; e < json.Length && json[e] != '\"'; e++) {
-			}
-			var r = json.Substring (b, e - b);
-			return r;
-		}
+			var inputs = new Dictionary<string, string> ();
+			var json = JsonValue.Parse (encoded) as JsonObject;
 
-		public static IDictionary<string, string> GetValuesFromResponse (string response, ResponseFormat format)
-		{
-			if (format == ResponseFormat.Form)
-				return WebEx.FormDecode (response);
-
-			if (format == ResponseFormat.Json) {
-				var json = (JsonObject) JsonValue.Parse (response);
-
-				return json.ToDictionary (
-					p => p.Key,
-					p => {
-						var val = p.Value;
-						switch (val.JsonType) {
-						case JsonType.Boolean:
-							return ((bool) val) ? "true" : "false";
-						case JsonType.Number:
-							return ((double) val).ToString ("F", CultureInfo.InvariantCulture);
-						case JsonType.String:
-							return (string) val;
-						case JsonType.Array:
-							return "[array]";
-						case JsonType.Object:
-							return "[object]";
-						default: throw new NotImplementedException ();
-						}
+			foreach (var kv in json) {
+				var v = kv.Value as JsonValue;
+				if (v != null) {
+					switch (v.JsonType) {
+					case JsonType.String:
+						inputs [kv.Key] = (string) v;
+						break;
+					case JsonType.Number:
+						inputs [kv.Key] = ((int) v).ToString ();
+						break;
 					}
-				);
+				}
 			}
 
-			throw new NotImplementedException ();
+			return inputs;
 		}
 	}
 }

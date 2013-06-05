@@ -33,8 +33,8 @@ namespace Xamarin.Auth
 		Uri initialUrl;
 		Uri redirectUrl;
 
-		protected override string ExternalUrlScheme {
-			get { return redirectUrl.Scheme; }
+		protected override Uri CustomUrl {
+			get { return redirectUrl; }
 		}
 
 		/// <summary>
