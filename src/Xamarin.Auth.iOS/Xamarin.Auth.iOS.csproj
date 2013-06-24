@@ -101,5 +101,6 @@
       <Link>ICustomUrlHandler.cs</Link>
     </Compile>
     <Compile Include="SafariUrlHandler.cs" />
+    <Compile Include="OAuth1PreAAuthenticator.cs"/>
   </ItemGroup>
 </Project>

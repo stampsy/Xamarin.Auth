@@ -40,18 +40,18 @@ namespace Xamarin.Auth
 	public class OAuth1Authenticator : WebAuthenticator
 #endif
 	{
-		string consumerKey;
-		string consumerSecret;
+		protected string consumerKey;
+		protected string consumerSecret;
 
-		Uri requestTokenUrl;
-		Uri authorizeUrl;
-		Uri accessTokenUrl;
-		Uri callbackUrl;
+		protected Uri requestTokenUrl;
+		protected Uri authorizeUrl;
+		protected Uri accessTokenUrl;
+		protected Uri callbackUrl;
 
 		GetUsernameAsyncFunc getUsernameAsync;
 
-		string token;
-		string tokenSecret;
+		protected string token;
+		protected string tokenSecret;
 
 		string verifier;
 
