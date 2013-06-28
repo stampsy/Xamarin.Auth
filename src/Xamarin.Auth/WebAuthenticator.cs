@@ -71,8 +71,9 @@ namespace Xamarin.Auth
 		/// <param name='url'>
 		/// The URL of the page.
 		/// </param>
-		public virtual void OnPageLoading (Uri url)
+		public virtual bool OnPageLoading (Uri url)
 		{
+			return true;
 		}
 
 		/// <summary>

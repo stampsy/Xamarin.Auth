@@ -126,6 +126,7 @@ namespace Xamarin.Auth
 		/// A task that will return the initial URL.
 		/// </returns>
 		public override Task<Uri> GetInitialUrlAsync () {
+
 			var req = OAuth1.CreateRequest (
 				"GET",
 				requestTokenUrl, 
@@ -177,7 +178,7 @@ namespace Xamarin.Auth
 			}
 		}
 
-		Task GetAccessTokenAsync ()
+		protected Task GetAccessTokenAsync ()
 		{
 			var requestParams = new Dictionary<string, string> {
 				{ "oauth_token", token }

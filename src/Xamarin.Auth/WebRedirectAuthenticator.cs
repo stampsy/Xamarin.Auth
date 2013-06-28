@@ -85,12 +85,14 @@ namespace Xamarin.Auth
 		/// <param name='url'>
 		/// The URL of the page.
 		/// </param>
-		public override void OnPageLoading (Uri url)
+		public override bool OnPageLoading (Uri url)
 		{
 			var query = WebEx.FormDecode (url.Query);
 			var fragment = WebEx.FormDecode (url.Fragment);
 
 			OnPageEncountered (url, query, fragment);
+
+			return true;
 		}
 
 		/// <summary>

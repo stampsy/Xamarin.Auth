@@ -44,10 +44,10 @@ namespace Xamarin.Auth
 				string paramType = authorizeUrl.AbsoluteUri.IndexOf("?") >= 0 ? "&" : "?";
 
 				var url = String.Format ("{0}{1}oauth_token={2}&oauth_callback={3}",
-										 authorizeUrl.AbsoluteUri,
+				                         authorizeUrl.AbsoluteUri,
 										 paramType,
-										 Uri.EscapeDataString (token), 
-										 Uri.EscapeDataString (callbackUrl.AbsoluteUri));
+										 Uri.EscapeDataString (token),
+				                         Uri.EscapeDataString (callbackUrl.AbsoluteUri));
 
 				return new Uri (url);
 			});
