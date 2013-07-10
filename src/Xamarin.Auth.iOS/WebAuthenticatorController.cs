@@ -57,14 +57,18 @@ namespace Xamarin.Auth
 					Cancel ();
 				});
 
-			activity = new UIActivityIndicatorView (UIActivityIndicatorViewStyle.White);
-			NavigationItem.RightBarButtonItem = new UIBarButtonItem (activity);
-
 			webView = new UIWebView (View.Bounds) {
 				Delegate = new WebViewDelegate (this),
 				AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight,
 			};
 			View.AddSubview (webView);
+
+			activity = new UIActivityIndicatorView (UIActivityIndicatorViewStyle.Gray) {
+				AutoresizingMask = UIViewAutoresizing.FlexibleMargins,
+				Center = View.Center
+			};
+
+			View.AddSubview (activity);
 			View.BackgroundColor = UIColor.Black;
 
 			//
@@ -80,10 +84,13 @@ namespace Xamarin.Auth
 
 		void BeginLoadingInitialUrl ()
 		{
+			activity.StartAnimating ();
+
 			authenticator.GetInitialUrlAsync ().ContinueWith (t => {
 				if (t.IsFaulted) {
 					keepTryingAfterError = false;
 					authenticator.OnError (t.Exception);
+					activity.StopAnimating ();
 				}
 				else {
 					// Delete cookies so we can work with multiple accounts
@@ -165,6 +172,13 @@ namespace Xamarin.Auth
 			}
 		}
 
+		void MoveActivityToNavigationBar ()
+		{
+			activity.RemoveFromSuperview ();
+			activity.ActivityIndicatorViewStyle = UIActivityIndicatorViewStyle.White;
+			NavigationItem.RightBarButtonItem = new UIBarButtonItem (activity);
+		}
+
 		protected class WebViewDelegate : UIWebViewDelegate
 		{
 			protected WebAuthenticatorController controller;
@@ -194,6 +208,9 @@ namespace Xamarin.Auth
 
 			public override void LoadStarted (UIWebView webView)
 			{
+				if (lastUrl != null)
+					controller.MoveActivityToNavigationBar ();
+
 				controller.activity.StartAnimating ();
 
 				webView.UserInteractionEnabled = false;
