@@ -132,7 +132,7 @@ namespace Xamarin.Auth
 		/// </returns>
 		protected override AuthenticateUIType GetPlatformUI ()
 		{
-			return new MonoTouch.UIKit.UINavigationController (new WebAuthenticatorController (this));
+			return new WebAuthenticatorNavigationController (new WebAuthenticatorController (this));
 		}
 #elif PLATFORM_ANDROID
 		/// <summary>
