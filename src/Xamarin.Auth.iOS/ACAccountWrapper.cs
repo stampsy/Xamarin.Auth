@@ -33,11 +33,17 @@ namespace Xamarin.Auth
 		ACAccountStore store;
 		#pragma warning restore 414
 
+		bool isTwitterAccount;
+
 		public ACAccount ACAccount { get; private set; }
 
 		public override string Username { 
-			get { 
-				return ACAccount.Username;
+			get {
+				var username = ACAccount.Username;
+				if (isTwitterAccount)
+					username = "@" + username;
+
+				return username;
 			}
 			set {
 			}
@@ -51,6 +57,7 @@ namespace Xamarin.Auth
 			this.ACAccount = account;
 
 			this.store = store;
+			this.isTwitterAccount = account.AccountType.Identifier == store.FindAccountType (ACAccountType.Twitter).Identifier;
 		}
 	}
 }
