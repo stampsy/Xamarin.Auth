@@ -40,18 +40,18 @@ namespace Xamarin.Auth
 	public class OAuth1Authenticator : WebAuthenticator
 #endif
 	{
-		string consumerKey;
-		string consumerSecret;
+		protected string consumerKey;
+		protected string consumerSecret;
 
-		Uri requestTokenUrl;
-		Uri authorizeUrl;
-		Uri accessTokenUrl;
-		Uri callbackUrl;
+		protected Uri requestTokenUrl;
+		protected Uri authorizeUrl;
+		protected Uri accessTokenUrl;
+		protected Uri callbackUrl;
 
 		GetUsernameAsyncFunc getUsernameAsync;
 
-		string token;
-		string tokenSecret;
+		protected string token;
+		protected string tokenSecret;
 
 		string verifier;
 
@@ -126,6 +126,7 @@ namespace Xamarin.Auth
 		/// A task that will return the initial URL.
 		/// </returns>
 		public override Task<Uri> GetInitialUrlAsync () {
+
 			var req = OAuth1.CreateRequest (
 				"GET",
 				requestTokenUrl, 
@@ -177,7 +178,7 @@ namespace Xamarin.Auth
 			}
 		}
 
-		Task GetAccessTokenAsync ()
+		protected Task GetAccessTokenAsync ()
 		{
 			var requestParams = new Dictionary<string, string> {
 				{ "oauth_token", token }

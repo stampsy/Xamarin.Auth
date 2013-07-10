@@ -169,6 +169,7 @@ namespace Xamarin.Auth
 		{
 			protected WebAuthenticatorController controller;
 			Uri lastUrl;
+			bool ignoreLoadInterruptedError;
 
 			public WebViewDelegate (WebAuthenticatorController controller)
 			{
@@ -182,7 +183,9 @@ namespace Xamarin.Auth
 				if (nsUrl != null) {
 					Uri url;
 					if (Uri.TryCreate (nsUrl.AbsoluteString, UriKind.Absolute, out url)) {
-						controller.authenticator.OnPageLoading (url);
+						var shouldStartLoad = controller.authenticator.OnPageLoading (url);
+						ignoreLoadInterruptedError = !shouldStartLoad;
+						return shouldStartLoad;
 					}
 				}
 
@@ -202,7 +205,8 @@ namespace Xamarin.Auth
 
 				webView.UserInteractionEnabled = true;
 
-				controller.authenticator.OnError (error.LocalizedDescription);
+				if (!ignoreLoadInterruptedError || error.Code != 102)
+					controller.authenticator.OnError (error.LocalizedDescription);
 			}
 
 			public override void LoadingFinished (UIWebView webView)
