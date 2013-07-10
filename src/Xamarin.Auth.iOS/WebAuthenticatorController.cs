@@ -164,12 +164,7 @@ namespace Xamarin.Auth
 				(Action)BeginLoadingInitialUrl :
 				(Action)Cancel;
 
-			if (e.Exception != null) {
-				this.ShowError ("Authentication Error", e.Exception, after);
-			}
-			else {
-				this.ShowError ("Authentication Error", e.Message, after);
-			}
+			this.ShowError ("Connection Failed", "Check your Internet connection and try again.", after);
 		}
 
 		void MoveActivityToNavigationBar ()
