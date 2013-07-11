@@ -178,6 +178,7 @@ namespace Xamarin.Auth
 		protected class WebViewDelegate : UIWebViewDelegate
 		{
 			protected WebAuthenticatorController controller;
+			Uri lastUrl;
 			bool ignoreLoadInterruptedError;
 
 			public WebViewDelegate (WebAuthenticatorController controller)
