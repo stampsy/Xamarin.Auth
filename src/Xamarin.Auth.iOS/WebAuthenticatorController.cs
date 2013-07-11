@@ -60,6 +60,7 @@ namespace Xamarin.Auth
 			webView = new UIWebView (View.Bounds) {
 				Delegate = new WebViewDelegate (this),
 				AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight,
+				Hidden = true
 			};
 			View.AddSubview (webView);
 
@@ -69,7 +70,7 @@ namespace Xamarin.Auth
 			};
 
 			View.AddSubview (activity);
-			View.BackgroundColor = UIColor.Black;
+			View.BackgroundColor = UIColor.White;
 
 			//
 			// Locate our initial URL
@@ -177,7 +178,6 @@ namespace Xamarin.Auth
 		protected class WebViewDelegate : UIWebViewDelegate
 		{
 			protected WebAuthenticatorController controller;
-			Uri lastUrl;
 			bool ignoreLoadInterruptedError;
 
 			public WebViewDelegate (WebAuthenticatorController controller)
@@ -203,9 +203,6 @@ namespace Xamarin.Auth
 
 			public override void LoadStarted (UIWebView webView)
 			{
-				if (lastUrl != null)
-					controller.MoveActivityToNavigationBar ();
-
 				controller.activity.StartAnimating ();
 
 				webView.UserInteractionEnabled = false;
@@ -214,8 +211,10 @@ namespace Xamarin.Auth
 			public override void LoadFailed (UIWebView webView, NSError error)
 			{
 				controller.activity.StopAnimating ();
+				controller.MoveActivityToNavigationBar ();
 
 				webView.UserInteractionEnabled = true;
+				webView.Hidden = false;
 
 				if (!ignoreLoadInterruptedError || error.Code != 102)
 					controller.authenticator.OnError (error.LocalizedDescription);
@@ -224,8 +223,10 @@ namespace Xamarin.Auth
 			public override void LoadingFinished (UIWebView webView)
 			{
 				controller.activity.StopAnimating ();
+				controller.MoveActivityToNavigationBar ();
 
 				webView.UserInteractionEnabled = true;
+				webView.Hidden = false;
 
 				var url = new Uri (webView.Request.Url.AbsoluteString);
 				if (url != lastUrl) { // Prevent loading the same URL multiple times
