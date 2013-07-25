@@ -175,6 +175,11 @@ namespace Xamarin.Auth
 					"You need to replace '{0}' with application-specific custom URL to use browser authentication.", CustomUrl));
 
 			GetInitialUrlAsync ().ContinueWith (initUrlTask => {
+				if (initUrlTask.IsFaulted)
+					OnError (initUrlTask.Exception);
+				else if (initUrlTask.IsCanceled)
+					OnCancelled ();
+
 				var externalUrl = initUrlTask.Result;
 
 				handler.OpenUrl (externalUrl, CustomUrl.Scheme).ContinueWith (callbackTask => {
