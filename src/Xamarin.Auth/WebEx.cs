@@ -22,7 +22,6 @@ using System.IO;
 using System.Json;
 using System.Linq;
 using System.Globalization;
-using Xamarin.Auth;
 
 namespace Xamarin.Utilities
 {
@@ -69,47 +68,6 @@ namespace Xamarin.Utilities
 				.FromAsync<WebResponse> (request.BeginGetResponse, request.EndGetResponse, null);
 		}
 
-		/// <summary>
-		/// Encodes a string according to: http://www.ietf.org/rfc/rfc3986.txt
-		/// </summary>
-		/// <returns>
-		/// The encoded string.
-		/// </returns>
-		/// <param name='unencoded'>
-		/// The string to encode.
-		/// </param>
-		public static string EncodeString (string unencoded)
-		{
-			var utf8 = Encoding.UTF8.GetBytes (unencoded);
-			var sb = new StringBuilder ();
-
-			for (var i = 0; i < utf8.Length; i++) {
-				var v = utf8[i];
-				if ((0x41 <= v && v <= 0x5A) || (0x61 <= v && v <= 0x7A) || (0x30 <= v && v <= 0x39) ||
-				    v == 0x2D || v == 0x2E || v == 0x5F || v == 0x7E) {
-					sb.Append ((char)v);
-				} else {
-					sb.AppendFormat (CultureInfo.InvariantCulture, "%{0:X2}", v);
-				}
-			}
-
-			return sb.ToString ();
-		}
-
-		public static string FormEncode (this IDictionary<string, string> inputs)
-		{
-			var sb = new StringBuilder ();
-			var head = "";
-			foreach (var p in inputs) {
-				sb.Append (head);
-				sb.Append (EncodeString (p.Key));
-				sb.Append ("=");
-				sb.Append (EncodeString (p.Value));
-				head = "&";
-			}
-			return sb.ToString ();
-		}
-
 		static char[] AmpersandChars = new char[] { '&' };
 		static char[] EqualsChars = new char[] { '=' };
 
@@ -127,6 +85,24 @@ namespace Xamarin.Utilities
 				var k = Uri.UnescapeDataString (kv[0]);
 				var v = kv.Length > 1 ? Uri.UnescapeDataString (kv[1]) : "";
 				inputs[k] = v;
+			}
+
+			return inputs;
+		}
+
+		public static Dictionary<string, string> JsonDecode (string encodedString)
+		{
+			var inputs = new Dictionary<string, string> ();
+			var json = JsonValue.Parse (encodedString) as JsonObject;
+
+			foreach (var kv in json) {
+				var v = kv.Value as JsonValue;
+				if (v != null) {
+					if (v.JsonType != JsonType.String)
+						inputs[kv.Key] = v.ToString();
+					else
+						inputs[kv.Key] = (string)v;
+				}
 			}
 
 			return inputs;
@@ -169,28 +145,6 @@ namespace Xamarin.Utilities
 			}
 
 			return sb.ToString();
-		}
-
-		public static Dictionary<string, string> JsonDecode (string encoded)
-		{
-			var inputs = new Dictionary<string, string> ();
-			var json = JsonValue.Parse (encoded) as JsonObject;
-
-			foreach (var kv in json) {
-				var v = kv.Value as JsonValue;
-				if (v != null) {
-					switch (v.JsonType) {
-					case JsonType.String:
-						inputs [kv.Key] = (string) v;
-						break;
-					case JsonType.Number:
-						inputs [kv.Key] = ((int) v).ToString ();
-						break;
-					}
-				}
-			}
-
-			return inputs;
 		}
 
 		public static string GetValueFromJson (string json, string key)

@@ -19,7 +19,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
-    <GenerateDocumentation>True</GenerateDocumentation>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -29,7 +28,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
-    <GenerateDocumentation>True</GenerateDocumentation>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
@@ -44,6 +42,12 @@
     <Compile Include="FormAuthenticator.cs" />
     <Compile Include="OAuth1Authenticator.cs" />
     <Compile Include="OAuth2Authenticator.cs" />
+    <Compile Include="System.Json\JavaScriptReader.cs" />
+    <Compile Include="System.Json\JsonArray.cs" />
+    <Compile Include="System.Json\JsonObject.cs" />
+    <Compile Include="System.Json\JsonPrimitive.cs" />
+    <Compile Include="System.Json\JsonType.cs" />
+    <Compile Include="System.Json\JsonValue.cs" />
     <Compile Include="WebAuthenticator.cs" />
     <Compile Include="OAuth1.cs" />
     <Compile Include="AuthException.cs" />
@@ -55,6 +59,7 @@
     <Compile Include="Request.cs" />
     <Compile Include="Response.cs" />
     <Compile Include="ICustomUrlHandler.cs" />
+    <Compile Include="WebUtilities.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

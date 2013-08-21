@@ -1,10 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Type Name="Account" FullName="Xamarin.Auth.Account">
   <TypeSignature Language="C#" Value="public class Account" />
   <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit Account extends System.Object" />
   <AssemblyInfo>
     <AssemblyName>Xamarin.Auth</AssemblyName>
-    <AssemblyVersion>1.0.4762.28561</AssemblyVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -12,7 +13,7 @@
   <Interfaces />
   <Docs>
     <summary>An Account that represents an authenticated user of a social network.</summary>
-    <remarks>To be added.</remarks>
+    <remarks></remarks>
   </Docs>
   <Members>
     <Member MemberName=".ctor">
@@ -20,12 +21,14 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor() cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.4762.28561</AssemblyVersion>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+        <AssemblyVersion>1.1.0.0</AssemblyVersion>
+        <AssemblyVersion>1.2.0.0</AssemblyVersion>
       </AssemblyInfo>
       <Parameters />
       <Docs>
-        <summary>Initializes a new blank <see cref="Xamarin.Auth.Account"/>.</summary>
-        <remarks>To be added.</remarks>
+        <summary>Initializes a new blank <see cref="Xamarin.Auth.Account" />.</summary>
+        <remarks></remarks>
       </Docs>
     </Member>
     <Member MemberName=".ctor">
@@ -33,15 +36,17 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(string username) cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.4762.28561</AssemblyVersion>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+        <AssemblyVersion>1.1.0.0</AssemblyVersion>
+        <AssemblyVersion>1.2.0.0</AssemblyVersion>
       </AssemblyInfo>
       <Parameters>
         <Parameter Name="username" Type="System.String" />
       </Parameters>
       <Docs>
         <param name="username">The username for the account.</param>
-        <summary>Initializes an <see cref="Xamarin.Auth.Account"/> with the given username.</summary>
-        <remarks>To be added.</remarks>
+        <summary>Initializes an <see cref="Xamarin.Auth.Account" /> with the given username.</summary>
+        <remarks></remarks>
       </Docs>
     </Member>
     <Member MemberName=".ctor">
@@ -49,7 +54,9 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(string username, class System.Collections.Generic.IDictionary`2&lt;string, string&gt; properties) cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.4762.28561</AssemblyVersion>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+        <AssemblyVersion>1.1.0.0</AssemblyVersion>
+        <AssemblyVersion>1.2.0.0</AssemblyVersion>
       </AssemblyInfo>
       <Parameters>
         <Parameter Name="username" Type="System.String" />
@@ -58,8 +65,8 @@
       <Docs>
         <param name="username">The username for the account.</param>
         <param name="properties">Properties for the account.</param>
-        <summary>Initializes an <see cref="Xamarin.Auth.Account"/> with the given username and properties.</summary>
-        <remarks>To be added.</remarks>
+        <summary>Initializes an <see cref="Xamarin.Auth.Account" /> with the given username and properties.</summary>
+        <remarks></remarks>
       </Docs>
     </Member>
     <Member MemberName=".ctor">
@@ -67,7 +74,9 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(string username, class System.Net.CookieContainer cookies) cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.4762.28561</AssemblyVersion>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+        <AssemblyVersion>1.1.0.0</AssemblyVersion>
+        <AssemblyVersion>1.2.0.0</AssemblyVersion>
       </AssemblyInfo>
       <Parameters>
         <Parameter Name="username" Type="System.String" />
@@ -76,8 +85,8 @@
       <Docs>
         <param name="username">The username for the account.</param>
         <param name="cookies">The cookies to be stored with the account.</param>
-        <summary>Initializes an <see cref="Xamarin.Auth.Account"/> with the given username and cookies.</summary>
-        <remarks>To be added.</remarks>
+        <summary>Initializes an <see cref="Xamarin.Auth.Account" /> with the given username and cookies.</summary>
+        <remarks></remarks>
       </Docs>
     </Member>
     <Member MemberName=".ctor">
@@ -85,7 +94,9 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(string username, class System.Collections.Generic.IDictionary`2&lt;string, string&gt; properties, class System.Net.CookieContainer cookies) cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.4762.28561</AssemblyVersion>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+        <AssemblyVersion>1.1.0.0</AssemblyVersion>
+        <AssemblyVersion>1.2.0.0</AssemblyVersion>
       </AssemblyInfo>
       <Parameters>
         <Parameter Name="username" Type="System.String" />
@@ -96,8 +107,8 @@
         <param name="username">The username for the account.</param>
         <param name="properties">Properties for the account.</param>
         <param name="cookies">The cookies to be stored with the account.</param>
-        <summary>Initializes an <see cref="Xamarin.Auth.Account"/> with the given username, properties, and cookies.</summary>
-        <remarks>To be added.</remarks>
+        <summary>Initializes an <see cref="Xamarin.Auth.Account" /> with the given username, properties, and cookies.</summary>
+        <remarks></remarks>
       </Docs>
     </Member>
     <Member MemberName="Cookies">
@@ -105,15 +116,17 @@
       <MemberSignature Language="ILAsm" Value=".property instance class System.Net.CookieContainer Cookies" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.4762.28561</AssemblyVersion>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+        <AssemblyVersion>1.1.0.0</AssemblyVersion>
+        <AssemblyVersion>1.2.0.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Net.CookieContainer</ReturnType>
       </ReturnValue>
       <Docs>
         <summary> Cookies that are stored with the account for web services that control access using cookies.</summary>
-        <value>To be added.</value>
-        <remarks>To be added.</remarks>
+        <value></value>
+        <remarks></remarks>
       </Docs>
     </Member>
     <Member MemberName="Deserialize">
@@ -121,7 +134,9 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig class Xamarin.Auth.Account Deserialize(string serializedString) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.4762.28561</AssemblyVersion>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+        <AssemblyVersion>1.1.0.0</AssemblyVersion>
+        <AssemblyVersion>1.2.0.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>Xamarin.Auth.Account</ReturnType>
@@ -130,10 +145,13 @@
         <Parameter Name="serializedString" Type="System.String" />
       </Parameters>
       <Docs>
-        <param name="serializedString">The serialized account generated by <see cref="M:Xamarin.Auth.Account.Serialize"/>. </param>
+        <param name="serializedString">The serialized account generated by <see cref="M:Xamarin.Auth.Account.Serialize" />. </param>
         <summary>Restores an account from its serialized string representation.</summary>
-        <returns>To be added.</returns>
-        <remarks>To be added.</remarks>
+        <returns>
+          An <see cref="T:Xamarin.Auth.Account"/> instance represented by <paramref name="serializedString"/>.
+        </returns>
+        <remarks></remarks>
+        <altmember cref="M:Xamarin.Auth.Account.Serialize" />
       </Docs>
     </Member>
     <Member MemberName="Properties">
@@ -141,15 +159,17 @@
       <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Generic.Dictionary`2&lt;string, string&gt; Properties" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.4762.28561</AssemblyVersion>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+        <AssemblyVersion>1.1.0.0</AssemblyVersion>
+        <AssemblyVersion>1.2.0.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Collections.Generic.Dictionary&lt;System.String,System.String&gt;</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>A key-value store associated with this account. These get encrypted when the account is stored.</summary>
-        <value>To be added.</value>
-        <remarks>To be added.</remarks>
+        <value></value>
+        <remarks></remarks>
       </Docs>
     </Member>
     <Member MemberName="Serialize">
@@ -157,7 +177,9 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance string Serialize() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.4762.28561</AssemblyVersion>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+        <AssemblyVersion>1.1.0.0</AssemblyVersion>
+        <AssemblyVersion>1.2.0.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -165,8 +187,9 @@
       <Parameters />
       <Docs>
         <summary>Serialize this account into a string that can be deserialized.</summary>
-        <returns>To be added.</returns>
-        <remarks>To be added.</remarks>
+        <returns>A <c>string</c> representing the <see cref="T:Xamarin.Auth.Account" /> instance.</returns>
+        <remarks></remarks>
+        <altmember cref="M:Xamarin.Auth.Account.Deserialize" />
       </Docs>
     </Member>
     <Member MemberName="ToString">
@@ -174,16 +197,18 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance string ToString() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.4762.28561</AssemblyVersion>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+        <AssemblyVersion>1.1.0.0</AssemblyVersion>
+        <AssemblyVersion>1.2.0.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
       <Parameters />
       <Docs>
-        <summary>Returns a <see cref="System.String"/> that represents the current <see cref="Xamarin.Auth.Account"/>.</summary>
-        <returns>A <see cref="System.String"/> that represents the current <see cref="Xamarin.Auth.Account"/>.</returns>
-        <remarks>To be added.</remarks>
+        <summary>Returns a <see cref="System.String" /> that represents the current <see cref="Xamarin.Auth.Account" />.</summary>
+        <returns>A <see cref="System.String" /> that represents the current <see cref="Xamarin.Auth.Account" />.</returns>
+        <remarks></remarks>
       </Docs>
     </Member>
     <Member MemberName="Username">
@@ -191,15 +216,17 @@
       <MemberSignature Language="ILAsm" Value=".property instance string Username" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.4762.28561</AssemblyVersion>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+        <AssemblyVersion>1.1.0.0</AssemblyVersion>
+        <AssemblyVersion>1.2.0.0</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>The username used as a key when storing this account</summary>
-        <value>To be added.</value>
-        <remarks>To be added.</remarks>
+        <value></value>
+        <remarks></remarks>
       </Docs>
     </Member>
   </Members>

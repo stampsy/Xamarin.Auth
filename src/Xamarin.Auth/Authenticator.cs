@@ -40,9 +40,16 @@ namespace Xamarin.Auth
 #endif
 	{
 		/// <summary>
-		/// Title of any UI elements that need to be presented for this authenticator.
+		/// Gets or sets the title of any UI elements that need to be presented for this authenticator.
 		/// </summary>
+		/// <value><c>"Authenticate" by default.</c></value>
 		public string Title { get; set; }
+
+		/// <summary>
+		/// Gets or sets whether to allow user cancellation.
+		/// </summary>
+		/// <value><c>true</c> by default.</value>
+		public bool AllowCancel { get; set; }
 
 		/// <summary>
 		/// Occurs when authentication has been successfully or unsuccessfully completed.
@@ -57,11 +64,19 @@ namespace Xamarin.Auth
 		public event EventHandler<AuthenticatorErrorEventArgs> Error;
 
 		/// <summary>
+		/// Gets whether this authenticator has completed its interaction with the user.
+		/// </summary>
+		/// <value><c>true</c> if authorization has been completed, <c>false</c> otherwise.</value>
+		public bool HasCompleted { get; private set; }
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="Xamarin.Auth.Authenticator"/> class.
 		/// </summary>
 		public Authenticator ()
 		{
 			Title = "Authenticate";
+			HasCompleted = false;
+			AllowCancel = true;
 		}
 
 #if PLATFORM_ANDROID
@@ -101,6 +116,11 @@ namespace Xamarin.Auth
 		/// </param>
 		public void OnSucceeded (Account account)
 		{
+			if (HasCompleted)
+				return;
+
+			HasCompleted = true;
+
 			BeginInvokeOnUIThread (delegate {
 				var ev = Completed;
 				if (ev != null) {
@@ -129,6 +149,11 @@ namespace Xamarin.Auth
 		/// </summary>
 		public void OnCancelled ()
 		{
+			if (HasCompleted)
+				return;
+
+			HasCompleted = true;
+
 			BeginInvokeOnUIThread (delegate {
 				var ev = Completed;
 				if (ev != null) {

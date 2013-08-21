@@ -51,11 +51,14 @@ namespace Xamarin.Auth
 			//
 			Title = authenticator.Title;
 
-			NavigationItem.LeftBarButtonItem = new UIBarButtonItem (
-				UIBarButtonSystemItem.Cancel,
-				delegate {
+			if (authenticator.AllowCancel)
+			{
+				NavigationItem.LeftBarButtonItem = new UIBarButtonItem (
+					UIBarButtonSystemItem.Cancel,
+					delegate {
 					Cancel ();
-				});
+				});				
+			}
 
 			webView = new UIWebView (View.Bounds) {
 				Delegate = new WebViewDelegate (this),
@@ -190,7 +193,7 @@ namespace Xamarin.Auth
 			{
 				var nsUrl = request.Url;
 
-				if (nsUrl != null) {
+				if (nsUrl != null && !controller.authenticator.HasCompleted) {
 					Uri url;
 					if (Uri.TryCreate (nsUrl.AbsoluteString, UriKind.Absolute, out url)) {
 						var shouldStartLoad = controller.authenticator.OnPageLoading (url);
@@ -211,6 +214,9 @@ namespace Xamarin.Auth
 
 			public override void LoadFailed (UIWebView webView, NSError error)
 			{
+				if (error.Domain == "NSURLErrorDomain" && error.Code == -999)
+					return;
+
 				controller.activity.StopAnimating ();
 				controller.MoveActivityToNavigationBar ();
 
@@ -230,7 +236,7 @@ namespace Xamarin.Auth
 				webView.Hidden = false;
 
 				var url = new Uri (webView.Request.Url.AbsoluteString);
-				if (url != lastUrl) { // Prevent loading the same URL multiple times
+				if (url != lastUrl && !controller.authenticator.HasCompleted) {
 					lastUrl = url;
 					controller.authenticator.OnPageLoaded (url);
 				}

@@ -41,6 +41,7 @@ namespace Xamarin.Auth
 		/// <summary>
 		/// The HTTP method.
 		/// </summary>
+		/// <value>A string representing the HTTP method to be used with this request.</value>
 		public string Method { get; protected set; }
 
 		/// <summary>
@@ -190,6 +191,7 @@ namespace Xamarin.Auth
 		/// Service implementors should override this method to modify the PreparedWebRequest
 		/// to authenticate it.
 		/// </remarks>
+		/// <param name="cancellationToken"></param>
 		/// <returns>
 		/// The response.
 		/// </returns>
@@ -211,89 +213,47 @@ namespace Xamarin.Auth
 				var boundary = "---------------------------" + new Random ().Next ();
 				request.ContentType = "multipart/form-data; boundary=" + boundary;
 
-				Task.Factory
-					.FromAsync<Stream> (request.BeginGetRequestStream, request.EndGetRequestStream, null)
-					.ContinueWith (reqStreamtask => {
-
-					try {
-						using (reqStreamtask.Result) {
-							WriteMultipartFormData (boundary, reqStreamtask.Result);
-						}
-					} catch (Exception ex) {
-						tcs.TrySetException (ex);
-						return;
-					}
-
-					Task.Factory
-						.FromAsync<WebResponse> (request.BeginGetResponse, request.EndGetResponse, null)
-						.ContinueWith (resTask => {
+				return Task.Factory
+						.FromAsync<Stream> (request.BeginGetRequestStream, request.EndGetRequestStream, null)
+						.ContinueWith (reqStreamtask => {
 						
-						Response result = null;
-						try {
-							result = new Response ((HttpWebResponse) resTask.Result);
-						} catch (Exception ex) {
-							tcs.TrySetException (ex);
-							return;
-						}
-
-						tcs.TrySetResult (result);
-
+					using (reqStreamtask.Result) {
+						WriteMultipartFormData (boundary, reqStreamtask.Result);
+					}
+						
+					return Task.Factory
+									.FromAsync<WebResponse> (request.BeginGetResponse, request.EndGetResponse, null)
+									.ContinueWith (resTask => {
+						return new Response ((HttpWebResponse)resTask.Result);
 					}, cancellationToken);
-				}, cancellationToken);
-			} else if (Method == "POST" && HasBody) {
-				var body = GetRawBody ();
+				}, cancellationToken).Unwrap();
+			} else if (Method == "POST" && Parameters.Count > 0) {
+				var body = Parameters.FormEncode ();
 				var bodyData = System.Text.Encoding.UTF8.GetBytes (body);
 				request.ContentLength = bodyData.Length;
 				request.ContentType = "application/x-www-form-urlencoded";
 
-				Task.Factory
-					.FromAsync<Stream> (request.BeginGetRequestStream, request.EndGetRequestStream, null)
-					.ContinueWith (reqStreamTask => {
-					
-					try {
-						using (reqStreamTask.Result) {
-							reqStreamTask.Result.Write (bodyData, 0, bodyData.Length);
-						}
-					} catch (Exception ex) {
-						tcs.TrySetException (ex);
-						return;
-					}
+				return Task.Factory
+						.FromAsync<Stream> (request.BeginGetRequestStream, request.EndGetRequestStream, null)
+						.ContinueWith (reqStreamTask => {
 
-					Task.Factory
+					using (reqStreamTask.Result) {
+						reqStreamTask.Result.Write (bodyData, 0, bodyData.Length);
+					}
+							
+					return Task.Factory
+								.FromAsync<WebResponse> (request.BeginGetResponse, request.EndGetResponse, null)
+									.ContinueWith (resTask => {
+						return new Response ((HttpWebResponse)resTask.Result);
+					}, cancellationToken);
+				}, cancellationToken).Unwrap();
+			} else {
+				return Task.Factory
 						.FromAsync<WebResponse> (request.BeginGetResponse, request.EndGetResponse, null)
 						.ContinueWith (resTask => {
-
-						Response result = null;
-						try {
-							result = new Response ((HttpWebResponse) resTask.Result);
-						} catch (Exception ex) {
-							tcs.TrySetException (ex);
-							return;
-						}
-						
-						tcs.TrySetResult (result);
-						
-					}, cancellationToken);
-				}, cancellationToken);
-			} else {
-				Task.Factory
-					.FromAsync<WebResponse> (request.BeginGetResponse, request.EndGetResponse, null)
-					.ContinueWith (resTask => {
-
-					Response result = null;
-					try {
-						result = new Response ((HttpWebResponse) resTask.Result);
-					} catch (Exception ex) {
-						tcs.TrySetException (ex);
-						return;
-					}
-
-					tcs.TrySetResult (result);
-
+					return new Response ((HttpWebResponse)resTask.Result);
 				}, cancellationToken);
 			}
-
-			return tcs.Task;
 		}
 
 		void WriteMultipartFormData (string boundary, Stream s)
