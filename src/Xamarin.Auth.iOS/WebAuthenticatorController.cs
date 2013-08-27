@@ -33,6 +33,7 @@ namespace Xamarin.Auth
 		UIActivityIndicatorView activity;
 		UIView authenticatingView;
 		ProgressLabel progress;
+		UIBarButtonItem cancelBarButtonItem;
 		bool webViewVisible = true;
 
 		const double TransitionTime = 0.25;
@@ -53,7 +54,7 @@ namespace Xamarin.Auth
 
 			if (authenticator.AllowCancel)
 			{
-				NavigationItem.LeftBarButtonItem = new UIBarButtonItem (
+				cancelBarButtonItem = NavigationItem.LeftBarButtonItem = new UIBarButtonItem (
 					UIBarButtonSystemItem.Cancel,
 					delegate {
 					Cancel ();
