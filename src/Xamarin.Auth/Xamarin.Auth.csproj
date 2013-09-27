@@ -60,6 +60,7 @@
     <Compile Include="Response.cs" />
     <Compile Include="ICustomUrlHandler.cs" />
     <Compile Include="WebUtilities.cs" />
+    <Compile Include="OAuth1PreAAuthenticator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

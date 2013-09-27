@@ -107,7 +107,9 @@
       <Link>ICustomUrlHandler.cs</Link>
     </Compile>
     <Compile Include="SafariUrlHandler.cs" />
-    <Compile Include="OAuth1PreAAuthenticator.cs" />
     <Compile Include="WebAuthenticatorNavigationController.cs" />
+    <Compile Include="..\Xamarin.Auth\OAuth1PreAAuthenticator.cs">
+      <Link>OAuth1PreAAuthenticator.cs</Link>
+    </Compile>
   </ItemGroup>
 </Project>
