@@ -75,7 +75,7 @@ namespace Xamarin.Auth
 				this.tcs = tcs;
 				this.callbackScheme = callbackScheme;
 
-				UIApplication.SharedApplication.OpenUrl (new NSUrl (url.ToString ()));
+				UIApplication.SharedApplication.OpenUrl (new NSUrl (url.AbsoluteUri));
 			});
 
 			return tcs.Task;
